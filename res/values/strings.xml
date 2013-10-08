@@ -1,4 +1,13 @@
 <resources>
 
-    <string name="app_name">Xperia Phone Vibrator</string>
+    <string name="app_name">Android Phone Vibrator</string>
+    <string name="cat_vibrate_options">Phone app vibration options</string>
+    <string name="title_vibrate_outgoing">Outgoing call</string>
+    <string name="title_vibrate_incoming">Incoming call</string>
+    <string name="title_vibrate_call_waiting">Call waiting</string>
+    <string name="title_vibrate_hangup">Hangup</string>
+    <string name="summ_vibrate_outgoing">Vibrate when an outgoing call is connected</string>
+    <string name="summ_vibrate_incoming">Vibrate when an incoming call is connected</string>
+    <string name="summ_vibrate_call_waiting">Vibrate when an incoming call is waiting</string>
+    <string name="summ_vibrate_hangup">Vibrate when a call is ended</string>
 </resources>

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gzplanet.xposed.xperiaphonevibrator"
-    android:versionCode="200"
-    android:versionName="2.00" >
+    android:versionCode="211"
+    android:versionName="2.11" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -11,15 +11,26 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
+
+        <activity
+            android:name=".XposedSettings"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
         <meta-data
             android:name="xposedminversion"
-            android:value="2.0*" />
+            android:value="2.2*" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Vibrate on connected outgoing call or ended call for Android phones" />
+            android:value="Vibrate on connected call, ended call and new call waiting for Android phones" />
     </application>
 
 </manifest>

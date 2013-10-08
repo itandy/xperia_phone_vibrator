@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:persistent="true" >
+
+    <PreferenceCategory android:title="@string/cat_vibrate_options" >
+        <CheckBoxPreference
+            android:key="pref_vibrate_outgoing"
+            android:title="@string/title_vibrate_outgoing"
+            android:summary="@string/summ_vibrate_outgoing"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
+            android:key="pref_vibrate_incoming"
+            android:title="@string/title_vibrate_incoming"
+            android:summary="@string/summ_vibrate_incoming"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
+            android:key="pref_vibrate_call_waiting"
+            android:title="@string/title_vibrate_call_waiting"
+            android:summary="@string/summ_vibrate_call_waiting"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
+            android:key="pref_vibrate_hangup"
+            android:title="@string/title_vibrate_hangup"
+            android:summary="@string/summ_vibrate_hangup"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
