@@ -14,6 +14,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -54,13 +55,16 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 							if (c != null) {
 								Call.State cstate = call.getState();
 
-//								XposedBridge.log(String.format("cstate:%d isIncoming:%b durationMillis:%d",
-//										cstate.ordinal(), c.isIncoming(), c.getDurationMillis()));
-
-								if (cstate == Call.State.ACTIVE && c.getDurationMillis() < 200)
+/*								XposedBridge.log(String.format("cstate:%d isIncoming:%b durationMillis:%d",
+										cstate.ordinal(), c.isIncoming(), c.getDurationMillis()));
+*/
+								if (cstate == Call.State.ACTIVE) {
 									if (pref.getBoolean("pref_vibrate_outgoing", true) && !c.isIncoming()
-											|| pref.getBoolean("pref_vibrate_incoming", true) && c.isIncoming())
+											&& c.getDurationMillis() < 200)
 										vibratePhone(param.thisObject, patternConnected);
+									else if (pref.getBoolean("pref_vibrate_incoming", true) && c.isIncoming())
+										vibratePhone(param.thisObject, patternConnected);
+								}
 							}
 						}
 					}
