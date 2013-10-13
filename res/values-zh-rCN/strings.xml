@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">Xperia通话振动</string>
+    <string name="app_name">Android通话振动</string>
     <string name="cat_vibrate_options">通话振动选项</string>
     <string name="title_vibrate_outgoing">去电接通</string>
     <string name="title_vibrate_incoming">来电接通</string>
