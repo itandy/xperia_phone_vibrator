@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gzplanet.xposed.xperiaphonevibrator"
-    android:versionCode="211"
-    android:versionName="2.11" >
+    android:versionCode="220"
+    android:versionName="2.20 (Build10140938)" >
 
     <uses-sdk
         android:minSdkVersion="15"

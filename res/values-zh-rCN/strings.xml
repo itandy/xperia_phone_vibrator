@@ -6,8 +6,10 @@
     <string name="title_vibrate_incoming">来电接通</string>
     <string name="title_vibrate_call_waiting">通话等待</string>
     <string name="title_vibrate_hangup">通话挂断</string>
+    <string name="title_vibrate_45_sec">每分钟震动</string>
     <string name="summ_vibrate_outgoing">拔出电话接通时振动</string>
     <string name="summ_vibrate_incoming">来电电话接通时振动</string>
     <string name="summ_vibrate_call_waiting">来电等待时振动</string>
     <string name="summ_vibrate_hangup">通话结束时震动</string>
+    <string name="summ_vibrate_45_sec">呼出通话到达每分钟的 45 秒时震动</string>
 </resources>
