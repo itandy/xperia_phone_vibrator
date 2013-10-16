@@ -15,6 +15,7 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -24,10 +25,12 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 	final long[] patternConnected = new long[] { 0, 100, 0, 0 };
 	final long[] patternHangup = new long[] { 0, 50, 100, 50 };
 	final long[] patternCallWaiting = new long[] { 0, 200, 300, 500 };
-	final long[] pattern45Sec = new long[] { 0, 70, 0, 0 };
+	final long[] patternEveryMinute = new long[] { 0, 70, 0, 0 };
+	final long[] patternFixedTime = new long[] { 0, 140, 0, 0 };
 
-	// potential conflict if 200 is already used
-	private static final int VIBRATE_45_SEC = 200;
+	// potential conflict if on/above 200 is already used
+	private static final int VIBRATE_EVERY_MIN = 200;
+	private static final int VIBRATE_FIXED_TIME = VIBRATE_EVERY_MIN + 1;
 
 	private static XSharedPreferences pref;
 
@@ -59,18 +62,35 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 							if (c != null) {
 								Call.State cstate = call.getState();
 
-//								XposedBridge.log(String.format("cstate:%d isIncoming:%b durationMillis:%d",
-//										cstate.ordinal(), c.isIncoming(), c.getDurationMillis()));
+//								XposedBridge.log(String.format("cstate:%s isIncoming:%b durationMillis:%d",
+//										cstate.toString(), c.isIncoming(), c.getDurationMillis()));
 
 								if (cstate == Call.State.ACTIVE) {
 									if (!c.isIncoming()) {
-										if (pref.getBoolean("pref_vibrate_outgoing", true)
-												&& c.getDurationMillis() < 200)
-											vibratePhone(param.thisObject, patternConnected);
+										if (c.getDurationMillis() < 200) {
+											// vibrate on connected outgoing call
+											if (pref.getBoolean("pref_vibrate_outgoing", true))
+												vibratePhone(param.thisObject, patternConnected);
+											
+											// vibrate at fixed time on connected outgoing call
+											if (pref.getBoolean("pref_vibrate_fixed_time", false)) {
+												final int time = Integer.valueOf(pref.getString(
+														"pref_vibrate_fixed_time_second", "0"));
+												startFixedTimeVibration(param.thisObject,
+														time * 1000 - c.getDurationMillis());
+											}
+										}
 
-										if (pref.getBoolean("pref_vibrate_45_sec", false))
-											start45SecondVibration(param.thisObject, c.getDurationMillis() % 60000);
+										// vibrate every minute on outgoing call
+										if (pref.getBoolean("pref_vibrate_every_minute", false)) {
+											final int second = Integer.valueOf(pref.getString(
+													"pref_vibrate_every_minute_second", "45"));
+											startEveryMinuteVibration(param.thisObject, second * 1000,
+													c.getDurationMillis() % 60000);
+										}
+
 									} else if (pref.getBoolean("pref_vibrate_incoming", true) && c.isIncoming())
+										// vibrate on connected incoming call
 										vibratePhone(param.thisObject, patternConnected);
 								}
 							}
@@ -89,9 +109,12 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 							if (c != null && c.getDurationMillis() > 0)
 								vibratePhone(param.thisObject, patternHangup);
 						}
-						
-						// Stop 45-second vibration
-						XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_45_SEC);
+
+						// Stop every minute vibration
+						XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_EVERY_MIN);
+
+						// Stop fixed time vibration
+						XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_FIXED_TIME);
 					}
 				});
 
@@ -112,17 +135,24 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 					}
 				});
 
-		// hook handleMessage to handle periodic vibration (45 second mark every minute)
+		// hook handleMessage to handle periodic/fixed time vibration new messages
 		XposedHelpers.findAndHookMethod(PKGNAME_SETTINGS + ".CallNotifier", lpparam.classLoader, "handleMessage",
 				Message.class, new XC_MethodHook() {
 					@Override
 					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 						int what = ((Message) param.args[0]).what;
-						if (what == VIBRATE_45_SEC) {
-							vibratePhone(param.thisObject, pattern45Sec);
-							XposedHelpers
-									.callMethod(param.thisObject, "sendEmptyMessageDelayed", VIBRATE_45_SEC, 60000);
+						switch (what) {
+						case VIBRATE_EVERY_MIN:
+							vibratePhone(param.thisObject, patternEveryMinute);
+							XposedHelpers.callMethod(param.thisObject, "sendEmptyMessageDelayed", VIBRATE_EVERY_MIN,
+									60000);
 							param.setResult(null);
+							break;
+						case VIBRATE_FIXED_TIME:
+							vibratePhone(param.thisObject, patternFixedTime);
+							XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_FIXED_TIME);
+							param.setResult(null);
+							break;
 						}
 					}
 				});
@@ -166,18 +196,25 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 		return (state == Call.State.INCOMING && !cm.hasActiveFgCall());
 	}
 
-	static void start45SecondVibration(Object thisObject, long callDurationMsec) {
-		XposedHelpers.callMethod(thisObject, "removeMessages", VIBRATE_45_SEC);
+	static void startEveryMinuteVibration(Object thisObject, long second, long callDurationMsec) {
+		XposedHelpers.callMethod(thisObject, "removeMessages", VIBRATE_EVERY_MIN);
 
 		long timer;
-		if (callDurationMsec > 45000) {
-			// Schedule the alarm at the next minute + 45 secs
-			timer = 45000 + 60000 - callDurationMsec;
+		if (callDurationMsec > second) {
+			// Schedule the alarm at the next minute + defined secs
+			timer = second + 60000 - callDurationMsec;
 		} else {
-			// Schedule the alarm at the first 45 second mark
-			timer = 45000 - callDurationMsec;
+			// Schedule the alarm at the first defined second mark
+			timer = second - callDurationMsec;
 		}
 
-		XposedHelpers.callMethod(thisObject, "sendEmptyMessageDelayed", VIBRATE_45_SEC, timer);
+		XposedHelpers.callMethod(thisObject, "sendEmptyMessageDelayed", VIBRATE_EVERY_MIN, timer);
+	}
+
+	static void startFixedTimeVibration(Object thisObject, long MillisBeforeVibration) {
+		XposedHelpers.callMethod(thisObject, "removeMessages", VIBRATE_FIXED_TIME);
+
+		if (MillisBeforeVibration > 0)
+			XposedHelpers.callMethod(thisObject, "sendEmptyMessageDelayed", VIBRATE_FIXED_TIME, MillisBeforeVibration);
 	}
 }

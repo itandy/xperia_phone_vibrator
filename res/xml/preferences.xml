@@ -2,12 +2,37 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:persistent="true" >
 
-    <PreferenceCategory android:title="@string/cat_vibrate_options" >
+    <PreferenceCategory android:title="@string/cat_outgoing_options" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_vibrate_outgoing"
             android:summary="@string/summ_vibrate_outgoing"
             android:title="@string/title_vibrate_outgoing" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_vibrate_every_minute"
+            android:summary="@string/summ_vibrate_every_minute"
+            android:title="@string/title_vibrate_every_minute" />
+        <EditTextPreference
+            android:defaultValue="45"
+            android:dependency="pref_vibrate_every_minute"
+            android:dialogTitle="@string/dlg_vibrate_every_minute_second"
+            android:key="pref_vibrate_every_minute_second"
+            android:title="@string/title_vibrate_every_minute_second" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_vibrate_fixed_time"
+            android:summary="@string/summ_vibrate_fixed_time"
+            android:title="@string/title_vibrate_fixed_time" />
+
+        <EditTextPreference
+            android:defaultValue="0"
+            android:dependency="pref_vibrate_fixed_time"
+            android:dialogTitle="@string/dlg_vibrate_fixed_time_second"
+            android:key="pref_vibrate_fixed_time_second"
+            android:title="@string/title_vibrate_fixed_time_second" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/cat_incoming_options" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_vibrate_incoming"
@@ -18,16 +43,13 @@
             android:key="pref_vibrate_call_waiting"
             android:summary="@string/summ_vibrate_call_waiting"
             android:title="@string/title_vibrate_call_waiting" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/cat_hangup_options" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_vibrate_hangup"
             android:summary="@string/summ_vibrate_hangup"
             android:title="@string/title_vibrate_hangup" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="pref_vibrate_45_sec"
-            android:summary="@string/summ_vibrate_45_sec"
-            android:title="@string/title_vibrate_45_sec" />
     </PreferenceCategory>
 
 </PreferenceScreen>

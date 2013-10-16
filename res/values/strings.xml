@@ -1,15 +1,48 @@
 <resources>
 
     <string name="app_name">Android Phone Vibrator</string>
-    <string name="cat_vibrate_options">Phone app vibration options</string>
+
+    <string name="cat_outgoing_options">Outgoing call vibration options</string>
+    <string name="cat_incoming_options">Incoming call vibration options</string>
+    <string name="cat_hangup_options">Hangup vibration options</string>
+    
     <string name="title_vibrate_outgoing">Outgoing call</string>
     <string name="title_vibrate_incoming">Incoming call</string>
     <string name="title_vibrate_call_waiting">Call waiting</string>
     <string name="title_vibrate_hangup">Hangup</string>
-    <string name="title_vibrate_45_sec">Vibrate every minute</string>
+    <string name="title_vibrate_every_minute">Every minute</string>
+    <string name="title_vibrate_every_minute_second">Every minute definition</string>
+    <string name="title_vibrate_fixed_time">Fixed time</string>
+    <string name="title_vibrate_fixed_time_second">Fixed time definition</string>
+
+    <string name="dlg_vibrate_every_minute_second">Second mark of every minute</string>
+    <string name="dlg_vibrate_fixed_time_second">Fixed time definition in seconds</string>
+
     <string name="summ_vibrate_outgoing">Vibrate when an outgoing call is connected</string>
     <string name="summ_vibrate_incoming">Vibrate when an incoming call is connected</string>
     <string name="summ_vibrate_call_waiting">Vibrate when an incoming call is waiting</string>
     <string name="summ_vibrate_hangup">Vibrate when a call is ended</string>
-    <string name="summ_vibrate_45_sec">Vibrate at the 45 second mark of every minute during outgoing calls</string>
+    <string name="summ_vibrate_every_minute">Vibrate at the %s second mark of every minute during outgoing calls</string>
+    <string name="summ_vibrate_fixed_time">Vibrate once at %s after an outgoing call is connected</string>
+    <string name="summ_vibrate_fixed_time_undefine">Vibrate once at fixed time after an outgoing call is connected</string>
+    
+    <string name="text_disabled">Disabled</string>
+    <string name="text_invalid_value">Invalid value</string>
+
+    <plurals name="numberOfSeconds">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <plurals name="numberOfMinutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="numberOfHours">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="numberOfDays">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
 </resources>
