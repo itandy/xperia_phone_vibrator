@@ -1,0 +1,48 @@
+<resources>
+
+    <string name="app_name">Android通話振動</string>
+
+    <string name="cat_outgoing_options">去電振動選項</string>
+    <string name="cat_incoming_options">來電振動選項</string>
+    <string name="cat_hangup_options">掛斷振動選項</string>
+
+    <string name="title_vibrate_outgoing">去電接通</string>
+    <string name="title_vibrate_incoming">來電接通</string>
+    <string name="title_vibrate_call_waiting">通話等待</string>
+    <string name="title_vibrate_hangup">通話掛斷</string>
+    <string name="title_vibrate_every_minute">每分鐘</string>
+    <string name="title_vibrate_every_minute_second">定義每分鐘</string>
+    <string name="title_vibrate_fixed_time">固定時間</string>
+    <string name="title_vibrate_fixed_time_second">定義固定時間</string>
+
+    <string name="dlg_vibrate_every_minute_second">每分鐘第幾秒</string>
+    <string name="dlg_vibrate_fixed_time_second">定義多少秒</string>
+
+    <string name="summ_vibrate_outgoing">拔出電話接通時振動</string>
+    <string name="summ_vibrate_incoming">來電電話接通時振動</string>
+    <string name="summ_vibrate_call_waiting">來電等待時振動</string>
+    <string name="summ_vibrate_hangup">通話結束時震動</string>
+    <string name="summ_vibrate_every_minute">撥出電話在每分鐘的第%s秒振動</string>
+    <string name="summ_vibrate_fixed_time">在通話中%s振動一次</string>
+    <string name="summ_vibrate_fixed_time_undefine">在通話中固定時間振動一次</string>
+    
+    <string name="text_disabled">關閉</string>
+    <string name="text_invalid_value">無效值</string>
+
+    <plurals name="numberOfSeconds">
+        <item quantity="one">%d秒</item>
+        <item quantity="other">%d秒</item>
+    </plurals>
+    <plurals name="numberOfMinutes">
+        <item quantity="one">%d分鐘</item>
+        <item quantity="other">%d分</item>
+    </plurals>
+    <plurals name="numberOfHours">
+        <item quantity="one">%d小時</item>
+        <item quantity="other">%d時</item>
+    </plurals>
+    <plurals name="numberOfDays">
+        <item quantity="one">%d天</item>
+        <item quantity="other">%d天</item>
+    </plurals>
+</resources>
