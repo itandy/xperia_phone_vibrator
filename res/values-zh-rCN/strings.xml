@@ -5,6 +5,7 @@
     <string name="cat_outgoing_options">去电振动选项</string>
     <string name="cat_incoming_options">来电振动选项</string>
     <string name="cat_hangup_options">挂断振动选项</string>
+    <string name="cat_other_options">其他选项</string>
 
     <string name="title_vibrate_outgoing">去电接通</string>
     <string name="title_vibrate_incoming">来电接通</string>
@@ -14,6 +15,8 @@
     <string name="title_vibrate_every_minute_second">定义每分钟</string>
     <string name="title_vibrate_fixed_time">固定时间</string>
     <string name="title_vibrate_fixed_time_second">定义固定时间</string>
+    <string name="title_vibrate_intensity">振动强度</string>
+    <string name="title_vibrate_connected">去电或来电</string>
 
     <string name="dlg_vibrate_every_minute_second">每分钟第几秒</string>
     <string name="dlg_vibrate_fixed_time_second">定义多少秒</string>
@@ -25,6 +28,14 @@
     <string name="summ_vibrate_every_minute">拨出电话在每分钟的第%s秒振动</string>
     <string name="summ_vibrate_fixed_time">在通话中%s振动一次</string>
     <string name="summ_vibrate_fixed_time_undefine">在通话中固定时间振动一次</string>
+    <string name="summ_vibrate_intensity">调整振动强度</string>
+
+    <string name="summ_vibrate_intensity_legend">1-最弱 2-默认 4-最强</string>
+    <string name="summ_connected_vibrate_intensity">拔出或来电时之振动强度</string>
+    <string name="summ_hangup_vibrate_intensity">通话结束时之振动强度</string>
+    <string name="summ_call_waiting_vibrate_intensity">来电等待时之振动强度</string>
+    <string name="summ_every_minute_vibrate_intensity">拨出电话时每分钟定时之振动强度</string>
+    <string name="summ_fixed_time_vibrate_intensity">在通话中固定时间之振动强度</string>
     
     <string name="text_disabled">关闭</string>
     <string name="text_invalid_value">无效值</string>

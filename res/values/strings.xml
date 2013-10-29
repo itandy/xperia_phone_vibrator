@@ -5,6 +5,7 @@
     <string name="cat_outgoing_options">Outgoing call vibration options</string>
     <string name="cat_incoming_options">Incoming call vibration options</string>
     <string name="cat_hangup_options">Hangup vibration options</string>
+    <string name="cat_other_options">Other options</string>
     
     <string name="title_vibrate_outgoing">Outgoing call</string>
     <string name="title_vibrate_incoming">Incoming call</string>
@@ -14,7 +15,9 @@
     <string name="title_vibrate_every_minute_second">Every minute definition</string>
     <string name="title_vibrate_fixed_time">Fixed time</string>
     <string name="title_vibrate_fixed_time_second">Fixed time definition</string>
-
+    <string name="title_vibrate_intensity">Vibration Intensity</string>
+    <string name="title_vibrate_connected">Outgoing/incoming call</string>
+    
     <string name="dlg_vibrate_every_minute_second">Second mark of every minute</string>
     <string name="dlg_vibrate_fixed_time_second">Fixed time definition in seconds</string>
 
@@ -25,6 +28,14 @@
     <string name="summ_vibrate_every_minute">Vibrate at the %s second mark of every minute during outgoing calls</string>
     <string name="summ_vibrate_fixed_time">Vibrate once at %s after an outgoing call is connected</string>
     <string name="summ_vibrate_fixed_time_undefine">Vibrate once at fixed time after an outgoing call is connected</string>
+    <string name="summ_vibrate_intensity">Adjust vibration intensity for each type</string>
+
+    <string name="summ_vibrate_intensity_legend">1-Weakest 2-Default 4-Strongest</string>
+    <string name="summ_connected_vibrate_intensity">Vibration intensity when a call is connected</string>
+    <string name="summ_hangup_vibrate_intensity">Vibration intensity when a call is ended</string>
+    <string name="summ_call_waiting_vibrate_intensity">Vibration intensity when a call is waiting</string>
+    <string name="summ_every_minute_vibrate_intensity">Vibration intensity for every minute during outgoing calls</string>
+    <string name="summ_fixed_time_vibrate_intensity">Vibration intensity at fixed time after an outgoing call is connected</string>
     
     <string name="text_disabled">Disabled</string>
     <string name="text_invalid_value">Invalid value</string>

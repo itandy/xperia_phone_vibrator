@@ -11,6 +11,7 @@ Features:
 5. Vibrate during outgoing call at 45 second mark of every minute (default is off)
 6. Vibrate once at fixed time after outgoing call is connected (default is off)
 7. Any of the above features can be turned on/off
+8. Vibration intensity can be adjusted
 
 This is a Xposed module so your phone must be rooted to use it. The module is based on AOSP ICS/JB phone app. I tested it using my Sony Xperia ZR phone with 4.2.2 stock ROM.
 

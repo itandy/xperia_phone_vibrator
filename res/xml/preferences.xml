@@ -52,4 +52,10 @@
             android:title="@string/title_vibrate_hangup" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/cat_other_options" >
+        <Preference
+            android:key="pref_vibrate_intensity"
+            android:summary="@string/summ_vibrate_intensity"
+            android:title="@string/title_vibrate_intensity" />
+    </PreferenceCategory>
 </PreferenceScreen>

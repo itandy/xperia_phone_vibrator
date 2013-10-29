@@ -4,7 +4,6 @@ import static de.robv.android.xposed.XposedHelpers.getObjectField;
 import android.content.Context;
 import android.os.AsyncResult;
 import android.os.Message;
-import android.os.Vibrator;
 
 import com.android.internal.telephony.Call;
 import com.android.internal.telephony.CallManager;
@@ -15,20 +14,13 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 	final static String PKGNAME_SETTINGS = "com.android.phone";
 
-	final long[] patternConnected = new long[] { 0, 100, 0, 0 };
-	final long[] patternHangup = new long[] { 0, 50, 100, 50 };
-	final long[] patternCallWaiting = new long[] { 0, 200, 300, 500 };
-	final long[] patternEveryMinute = new long[] { 0, 70, 0, 0 };
-	final long[] patternFixedTime = new long[] { 0, 140, 0, 0 };
-
-	// potential conflict if on/above 200 is already used
+	// potential conflict if 200 or above message ID is already used
 	private static final int VIBRATE_EVERY_MIN = 200;
 	private static final int VIBRATE_FIXED_TIME = VIBRATE_EVERY_MIN + 1;
 
@@ -51,7 +43,12 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 				AsyncResult.class, new XC_MethodHook() {
 					@Override
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						Context context = (Context) getObjectField(param.thisObject, "mApplication");
 						pref.reload();
+
+						// get intensity preferences
+						int connectedIntensity = pref.getInt("pref_connected_vibrate_intensity", 2);
+
 						CallManager mCM = (CallManager) getObjectField(param.thisObject, "mCM");
 
 						Object state = XposedHelpers.callMethod(mCM, "getState");
@@ -62,16 +59,16 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 							if (c != null) {
 								Call.State cstate = call.getState();
 
-//								XposedBridge.log(String.format("cstate:%s isIncoming:%b durationMillis:%d",
-//										cstate.toString(), c.isIncoming(), c.getDurationMillis()));
+								// XposedBridge.log(String.format("cstate:%s isIncoming:%b durationMillis:%d",
+								// cstate.toString(), c.isIncoming(), c.getDurationMillis()));
 
 								if (cstate == Call.State.ACTIVE) {
 									if (!c.isIncoming()) {
 										if (c.getDurationMillis() < 200) {
 											// vibrate on connected outgoing call
 											if (pref.getBoolean("pref_vibrate_outgoing", true))
-												vibratePhone(param.thisObject, patternConnected);
-											
+												Utils.vibratePhone(context, Utils.patternConnected, connectedIntensity);
+
 											// vibrate at fixed time on connected outgoing call
 											if (pref.getBoolean("pref_vibrate_fixed_time", false)) {
 												final int time = Integer.valueOf(pref.getString(
@@ -91,7 +88,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 
 									} else if (pref.getBoolean("pref_vibrate_incoming", true) && c.isIncoming())
 										// vibrate on connected incoming call
-										vibratePhone(param.thisObject, patternConnected);
+										Utils.vibratePhone(context, Utils.patternConnected, connectedIntensity);
 								}
 							}
 						}
@@ -103,11 +100,16 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 				AsyncResult.class, new XC_MethodHook() {
 					@Override
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						Context context = (Context) getObjectField(param.thisObject, "mApplication");
 						pref.reload();
+
+						// get intensity preferences
+						int hangupIntensity = pref.getInt("pref_hangup_vibrate_intensity", 2);
+
 						if (pref.getBoolean("pref_vibrate_hangup", true)) {
 							Connection c = (Connection) ((AsyncResult) param.args[0]).result;
 							if (c != null && c.getDurationMillis() > 0)
-								vibratePhone(param.thisObject, patternHangup);
+								Utils.vibratePhone(context, Utils.patternHangup, hangupIntensity);
 						}
 
 						// Stop every minute vibration
@@ -123,14 +125,19 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 				"onNewRingingConnection", AsyncResult.class, new XC_MethodHook() {
 					@Override
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						Context context = (Context) getObjectField(param.thisObject, "mApplication");
 						pref.reload();
+
+						// get intensity preferences
+						int callWaitingIntensity = pref.getInt("pref_call_waiting_vibrate_intensity", 2);
+
 						if (pref.getBoolean("pref_vibrate_call_waiting", true)) {
 							CallManager cm = (CallManager) getObjectField(param.thisObject, "mCM");
 							Connection c = (Connection) ((AsyncResult) param.args[0]).result;
 							Call.State state = c.getState();
 
 							if (!isRealIncomingCall(state, cm))
-								vibratePhone(param.thisObject, patternCallWaiting);
+								Utils.vibratePhone(context, Utils.patternCallWaiting, callWaitingIntensity);
 						}
 					}
 				});
@@ -140,16 +147,27 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 				Message.class, new XC_MethodHook() {
 					@Override
 					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+						Context context = (Context) getObjectField(param.thisObject, "mApplication");
 						int what = ((Message) param.args[0]).what;
 						switch (what) {
 						case VIBRATE_EVERY_MIN:
-							vibratePhone(param.thisObject, patternEveryMinute);
+							pref.reload();
+
+							// get intensity preferences
+							int everyMinuteIntensity = pref.getInt("pref_every_minute_vibrate_intensity", 2);
+
+							Utils.vibratePhone(context, Utils.patternEveryMinute, everyMinuteIntensity);
 							XposedHelpers.callMethod(param.thisObject, "sendEmptyMessageDelayed", VIBRATE_EVERY_MIN,
 									60000);
 							param.setResult(null);
 							break;
 						case VIBRATE_FIXED_TIME:
-							vibratePhone(param.thisObject, patternFixedTime);
+							pref.reload();
+
+							// get intensity preferences
+							int fixedTimeIntensity = pref.getInt("pref_fixed_time_vibrate_intensity", 2);
+
+							Utils.vibratePhone(context, Utils.patternFixedTime, fixedTimeIntensity);
 							XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_FIXED_TIME);
 							param.setResult(null);
 							break;
@@ -157,12 +175,6 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 					}
 				});
 
-	}
-
-	void vibratePhone(Object thisObject, long[] pattern) {
-		Context app = (Context) getObjectField(thisObject, "mApplication");
-		Vibrator vibrator = (Vibrator) app.getSystemService(Context.VIBRATOR_SERVICE);
-		vibrator.vibrate(pattern, -1);
 	}
 
 	// static helper functions from CM source code
