@@ -7,7 +7,7 @@
     <string name="cat_hangup_options">掛斷振動選項</string>
     <string name="cat_other_options">其他選項</string>
     
-    <string name="title_vibrate_outgoing">去電接通</string>
+    <string name="title_vibrate_outgoing">撥出接通</string>
     <string name="title_vibrate_incoming">來電接通</string>
     <string name="title_vibrate_call_waiting">通話等待</string>
     <string name="title_vibrate_hangup">通話掛斷</string>
@@ -16,12 +16,14 @@
     <string name="title_vibrate_fixed_time">固定時間</string>
     <string name="title_vibrate_fixed_time_second">定義固定時間</string>
     <string name="title_vibrate_intensity">振動強度</string>
-    <string name="title_vibrate_connected">去電或來電</string>
+    <string name="title_vibrate_connected">撥出或來電</string>
+    <string name="title_outgoing_state_change_threshold">撥出時更新狀態</string>
+    <string name="title_debug">啟用除錯信息</string>
     
     <string name="dlg_vibrate_every_minute_second">每分鐘第幾秒</string>
     <string name="dlg_vibrate_fixed_time_second">定義多少秒</string>
 
-    <string name="summ_vibrate_outgoing">拔出電話接通時振動</string>
+    <string name="summ_vibrate_outgoing">撥出電話接通時振動</string>
     <string name="summ_vibrate_incoming">來電電話接通時振動</string>
     <string name="summ_vibrate_call_waiting">來電等待時振動</string>
     <string name="summ_vibrate_hangup">通話結束時震動</string>
@@ -29,9 +31,11 @@
     <string name="summ_vibrate_fixed_time">在通話中%s振動一次</string>
     <string name="summ_vibrate_fixed_time_undefine">在通話中固定時間振動一次</string>
     <string name="summ_vibrate_intensity">調整振動強度</string>
-
+    <string name="summ_outgoing_state_change_threshold">撥出時更新狀態可容許的最長時間</string>
+    <string name="summ_debug">在Xposed日誌寫入更多除錯信息</string>
+    
     <string name="summ_vibrate_intensity_legend">1-最弱 2-默認 4-最強</string>
-    <string name="summ_connected_vibrate_intensity">拔出或來電時之振動強度</string>
+    <string name="summ_connected_vibrate_intensity">撥出或來電時之振動強度</string>
     <string name="summ_hangup_vibrate_intensity">通話結束時之振動強度</string>
     <string name="summ_call_waiting_vibrate_intensity">來電等待時之振動強度</string>
     <string name="summ_every_minute_vibrate_intensity">撥出電話時每分鐘定時之振動強度</string>

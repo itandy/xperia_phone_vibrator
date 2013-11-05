@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:robobunny="http://robobunny.com"
     android:persistent="true" >
 
     <PreferenceCategory android:title="@string/cat_outgoing_options" >
@@ -13,12 +14,14 @@
             android:key="pref_vibrate_every_minute"
             android:summary="@string/summ_vibrate_every_minute"
             android:title="@string/title_vibrate_every_minute" />
+
         <EditTextPreference
             android:defaultValue="45"
             android:dependency="pref_vibrate_every_minute"
             android:dialogTitle="@string/dlg_vibrate_every_minute_second"
             android:key="pref_vibrate_every_minute_second"
             android:title="@string/title_vibrate_every_minute_second" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_vibrate_fixed_time"
@@ -51,11 +54,28 @@
             android:summary="@string/summ_vibrate_hangup"
             android:title="@string/title_vibrate_hangup" />
     </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/cat_other_options" >
         <Preference
             android:key="pref_vibrate_intensity"
             android:summary="@string/summ_vibrate_intensity"
             android:title="@string/title_vibrate_intensity" />
     </PreferenceCategory>
+
+    <com.robobunny.SeekBarPreference
+        android:defaultValue="200"
+        android:key="pref_outgoing_state_change_threshold"
+        android:max="1000"
+        android:summary="@string/summ_outgoing_state_change_threshold"
+        android:title="@string/title_outgoing_state_change_threshold"
+        robobunny:interval="25"
+        robobunny:min="25"
+        robobunny:unitsLeft=""
+        robobunny:unitsRight="ms" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_debug"
+        android:summary="@string/summ_debug"
+        android:title="@string/title_debug" />
+
 </PreferenceScreen>

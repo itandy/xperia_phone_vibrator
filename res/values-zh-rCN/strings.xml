@@ -17,24 +17,28 @@
     <string name="title_vibrate_fixed_time_second">定义固定时间</string>
     <string name="title_vibrate_intensity">振动强度</string>
     <string name="title_vibrate_connected">去电或来电</string>
+    <string name="title_outgoing_state_change_threshold">去电时更新状态</string>
+    <string name="title_debug">启用除错信息</string>
 
     <string name="dlg_vibrate_every_minute_second">每分钟第几秒</string>
     <string name="dlg_vibrate_fixed_time_second">定义多少秒</string>
 
-    <string name="summ_vibrate_outgoing">拔出电话接通时振动</string>
+    <string name="summ_vibrate_outgoing">去电电话接通时振动</string>
     <string name="summ_vibrate_incoming">来电电话接通时振动</string>
     <string name="summ_vibrate_call_waiting">来电等待时振动</string>
     <string name="summ_vibrate_hangup">通话结束时震动</string>
-    <string name="summ_vibrate_every_minute">拨出电话在每分钟的第%s秒振动</string>
+    <string name="summ_vibrate_every_minute">去电电话在每分钟的第%s秒振动</string>
     <string name="summ_vibrate_fixed_time">在通话中%s振动一次</string>
     <string name="summ_vibrate_fixed_time_undefine">在通话中固定时间振动一次</string>
     <string name="summ_vibrate_intensity">调整振动强度</string>
+    <string name="summ_outgoing_state_change_threshold">去电时更新状态可容许的最长时间</string>
+    <string name="summ_debug">在Xposed日志写入更多除错信息</string>
 
     <string name="summ_vibrate_intensity_legend">1-最弱 2-默认 4-最强</string>
-    <string name="summ_connected_vibrate_intensity">拔出或来电时之振动强度</string>
+    <string name="summ_connected_vibrate_intensity">去电或来电时之振动强度</string>
     <string name="summ_hangup_vibrate_intensity">通话结束时之振动强度</string>
     <string name="summ_call_waiting_vibrate_intensity">来电等待时之振动强度</string>
-    <string name="summ_every_minute_vibrate_intensity">拨出电话时每分钟定时之振动强度</string>
+    <string name="summ_every_minute_vibrate_intensity">去电电话时每分钟定时之振动强度</string>
     <string name="summ_fixed_time_vibrate_intensity">在通话中固定时间之振动强度</string>
     
     <string name="text_disabled">关闭</string>

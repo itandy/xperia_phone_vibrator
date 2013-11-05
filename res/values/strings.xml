@@ -17,6 +17,8 @@
     <string name="title_vibrate_fixed_time_second">Fixed time definition</string>
     <string name="title_vibrate_intensity">Vibration Intensity</string>
     <string name="title_vibrate_connected">Outgoing/incoming call</string>
+    <string name="title_outgoing_state_change_threshold">Outgoing call state change</string>
+    <string name="title_debug">Enable debug info</string>
     
     <string name="dlg_vibrate_every_minute_second">Second mark of every minute</string>
     <string name="dlg_vibrate_fixed_time_second">Fixed time definition in seconds</string>
@@ -29,6 +31,8 @@
     <string name="summ_vibrate_fixed_time">Vibrate once at %s after an outgoing call is connected</string>
     <string name="summ_vibrate_fixed_time_undefine">Vibrate once at fixed time after an outgoing call is connected</string>
     <string name="summ_vibrate_intensity">Adjust vibration intensity for each type</string>
+    <string name="summ_outgoing_state_change_threshold">Threshold for state change for connected outgoing call</string>
+    <string name="summ_debug">Enable additional debug info to Xposed log file</string>
 
     <string name="summ_vibrate_intensity_legend">1-Weakest 2-Default 4-Strongest</string>
     <string name="summ_connected_vibrate_intensity">Vibration intensity when a call is connected</string>
