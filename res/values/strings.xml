@@ -1,6 +1,7 @@
 <resources>
 
     <string name="app_name">Android Phone Vibrator</string>
+    <string name="xposed_description">Vibrate on connected call, ended call and new call waiting for Android phones</string>
 
     <string name="cat_outgoing_options">Outgoing call vibration options</string>
     <string name="cat_incoming_options">Incoming call vibration options</string>

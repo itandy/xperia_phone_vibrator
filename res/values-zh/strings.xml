@@ -1,6 +1,7 @@
 <resources>
 
     <string name="app_name">Android通話振動</string>
+    <string name="xposed_description">在電話接通，結束及等待時振動</string>
 
     <string name="cat_outgoing_options">去電振動選項</string>
     <string name="cat_incoming_options">來電振動選項</string>

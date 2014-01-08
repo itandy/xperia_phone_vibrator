@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gzplanet.xposed.xperiaphonevibrator"
-    android:versionCode="250"
-    android:versionName="2.50 (Build11050013)" >
+    android:versionCode="251"
+    android:versionName="2.51 (Build01080037)" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -31,7 +31,7 @@
             android:value="2.2*" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Vibrate on connected call, ended call and new call waiting for Android phones" />
+            android:value="@string/xposed_description" />
     </application>
 
 </manifest>

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+          Copyright (C) 2009 The Android Open Source Project
+
+          Licensed under the Apache License, Version 2.0 (the "License");
+          you may not use this file except in compliance with the License.
+          You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+          Unless required by applicable law or agreed to in writing, software
+          distributed under the License is distributed on an "AS IS" BASIS,
+          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+          See the License for the specific language governing permissions and
+          limitations under the License.
+
+          Editor: 
+            ArtfulBits Inc. (c) 2005-2009 (http://www.artfulbits.com)
+            Android Localizer (aiLocalizer)
+        -->
+<!-- CZ překlad/CS translate WodokCZ -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:android="http://schemas.android.com/apk/res/android">
+  <!--Original value: Android Phone Vibrator-->
+  <string name="app_name">Android Phone Vibrator</string>
+  <string name="xposed_description">Vibruje když je hovor spojen, ukončen, nebo pokud na Vás čeká jiný volající, aplikace pro Android</string>
+  <!--Original value: Outgoing call vibration options-->
+  <string name="cat_outgoing_options">Možnosti vibrací při odchozím hovoru</string>
+  <!--Original value: Incoming call vibration options-->
+  <string name="cat_incoming_options">Možnosti vibrací při příchozím hovoru</string>
+  <!--Original value: Hangup vibration options-->
+  <string name="cat_hangup_options">Možnosti vibrace při zavěšení</string>
+  <!--Original value: Other options-->
+  <string name="cat_other_options">Ostatní možnosti</string>
+  <!--Original value: Outgoing call-->
+  <string name="title_vibrate_outgoing">Odchozí hovor</string>
+  <!--Original value: Incoming call-->
+  <string name="title_vibrate_incoming">Příchozí hovor</string>
+  <!--Original value: Call waiting-->
+  <string name="title_vibrate_call_waiting">Oznámení příchozího hovoru</string>
+  <!--Original value: Hangup-->
+  <string name="title_vibrate_hangup">Zavěšení</string>
+  <!--Original value: Every minute-->
+  <string name="title_vibrate_every_minute">Každou minutu</string>
+  <!--Original value: Every minute definition-->
+  <string name="title_vibrate_every_minute_second">Změnit čas vibrace každou minutu</string>
+  <!--Original value: Fixed time-->
+  <string name="title_vibrate_fixed_time">Zafixovaný čas</string>
+  <!--Original value: Fixed time definition-->
+  <string name="title_vibrate_fixed_time_second">Zafixovaný čas</string>
+  <!--Original value: Vibration Intensity-->
+  <string name="title_vibrate_intensity">Intenzita vibrací</string>
+  <!--Original value: Outgoing/incoming call-->
+  <string name="title_vibrate_connected">Odchozí/příchozí hovor</string>
+  <!--Original value: Outgoing call state change-->
+  <string name="title_outgoing_state_change_threshold">Změna stavu odchozího hovoru</string>
+  <!--Original value: Enable debug info-->
+  <string name="title_debug">Povolit ladící log</string>
+  <!--Original value: Second mark of every minute-->
+  <string name="dlg_vibrate_every_minute_second">Zadejte sekundu vibrace</string>
+  <!--Original value: Fixed time definition in seconds-->
+  <string name="dlg_vibrate_fixed_time_second">Definice fixovaného času v sekundách</string>
+  <!--Original value: Vibrate when an outgoing call is connected-->
+  <string name="summ_vibrate_outgoing">Zavibrovat kdyč je odchozí hovor spojen</string>
+  <!--Original value: Vibrate when an incoming call is connected-->
+  <string name="summ_vibrate_incoming">Zavibrovat když je příchozí hovor spojen</string>
+  <!--Original value: Vibrate when an incoming call is waiting-->
+  <string name="summ_vibrate_call_waiting">Zavibrovat když příchozí hovor čeká na lince</string>
+  <!--Original value: Vibrate when a call is ended-->
+  <string name="summ_vibrate_hangup">Zavibrovat když je hovor zavěšen</string>
+  <!--Original value: Vibrate at the %s second mark of every minute during outgoing calls-->
+  <string name="summ_vibrate_every_minute">Vibrovat každou %s. sekundu minuty při odchozím hovoru.</string>
+  <!--Original value: Vibrate once at %s after an outgoing call is connected-->
+  <string name="summ_vibrate_fixed_time">Zavibrovat %s sekund po spojení odchozího hovoru</string>
+  <!--Original value: Vibrate once at fixed time after an outgoing call is connected-->
+  <string name="summ_vibrate_fixed_time_undefine">Zavibrovat v zafixovaný čas po spojení odchozího hovoru</string>
+  <!--Original value: Adjust vibration intensity for each type-->
+  <string name="summ_vibrate_intensity">Zvolte si druhy vibrací pro požadované akce</string>
+  <!--Original value: Threshold for state change for connected outgoing call-->
+  <string name="summ_outgoing_state_change_threshold">Práh změny stavu spojeného odchozího hovoru</string>
+  <!--Original value: Enable additional debug info to Xposed log file-->
+  <string name="summ_debug">Povolit dodatečné ladící informace pro Xposed</string>
+  <!--Original value: 1-Weakest 2-Default 4-Strongest-->
+  <string name="summ_vibrate_intensity_legend">1-Slabé 2-Základní 4-Nejsilnější</string>
+  <!--Original value: Vibration intensity when a call is connected-->
+  <string name="summ_connected_vibrate_intensity">Intenzita vibrací při spojení hovoru</string>
+  <!--Original value: Vibration intensity when a call is ended-->
+  <string name="summ_hangup_vibrate_intensity">Intenzita vibrací při ukončení hovoru</string>
+  <!--Original value: Vibration intensity when a call is waiting-->
+  <string name="summ_call_waiting_vibrate_intensity">Intenzita vibrací při oznámení příchozího hovoru</string>
+  <!--Original value: Vibration intensity for every minute during outgoing calls-->
+  <string name="summ_every_minute_vibrate_intensity">Intenzita vibrací pro oznámení minuty v odchozích hovorech</string>
+  <!--Original value: Vibration intensity at fixed time after an outgoing call is connected-->
+  <string name="summ_fixed_time_vibrate_intensity">Intenzita vibrací pro oznámení zafixovaného času po spojení odchozího hovoru</string>
+  <!--Original value: Disabled-->
+  <string name="text_disabled">Vypnuto</string>
+  <!--Original value: Invalid value-->
+  <string name="text_invalid_value">Chybná hodnota</string>
+</resources>
