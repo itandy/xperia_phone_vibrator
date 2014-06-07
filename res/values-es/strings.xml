@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Android Phone Vibrator</string>
+	<string name="xposed_description">Ajustes de vibración de llamada conectada, llamada terminada y nueva llamada en espera, para los teléfonos Android</string>
+	<string name="cat_outgoing_options">Opciones de vibración llamada salientes</string>
+	<string name="cat_incoming_options">Opciones de vibración llamada entrante</string>
+	<string name="cat_hangup_options">Opciones de vibración Hangup</string>
+	<string name="cat_other_options">Otras opciones</string>
+	<string name="title_vibrate_outgoing">Llamada saliente</string>
+	<string name="title_vibrate_incoming">Llamada entrante</string>
+	<string name="title_vibrate_call_waiting">Llamada en espera</string>
+	<string name="title_vibrate_hangup">Colgar</string>
+	<string name="title_vibrate_every_minute">Cada minuto</string>
+	<string name="title_vibrate_every_minute_second">Definición cada minuto</string>
+	<string name="title_vibrate_fixed_time">Tiempo fijo</string>
+	<string name="title_vibrate_fixed_time_second">Definición de tiempo fijo</string>
+	<string name="title_vibrate_intensity">Intensidad Vibración</string>
+	<string name="title_vibrate_connected">Llamada saliente/entrante</string>
+	<string name="title_outgoing_state_change_threshold">Cambio de estado llamada saliente</string>
+	<string name="title_debug">Habilitar la información de depuración</string>
+	<string name="dlg_vibrate_every_minute_second">Segunda marca de cada minuto</string>
+	<string name="dlg_vibrate_fixed_time_second">Definición de tiempo fijo en segundos</string>
+	<string name="summ_vibrate_outgoing">Vibrar cuando se conecta una llamada saliente</string>
+	<string name="summ_vibrate_incoming">Vibrar cuando se conecta a una llamada entrante</string>
+	<string name="summ_vibrate_call_waiting">Vibrar cuando una llamada entrante está en espera</string>
+	<string name="summ_vibrate_hangup">Vibrar cuando se termina una llamada</string>
+	<string name="summ_vibrate_every_minute">Vibrar en segunda marca el %s de cada minuto durante las llamadas salientes</string>
+	<string name="summ_vibrate_fixed_time">Vibrar una vez a los %s después de una llamada saliente cuando estás conectado</string>
+	<string name="summ_vibrate_fixed_time_undefine">Vibrar una vez a tiempo fijo después de una llamada saliente cuando estás  conectado</string>
+	<string name="summ_vibrate_intensity">Ajuste la intensidad de vibración para cada tipo</string>
+	<string name="summ_outgoing_state_change_threshold">Umbral de cambio de estado para la llamada saliente conectado</string>
+	<string name="summ_debug">Habilitar la información de depuración adicional al archivo de registro de Xposed</string>
+	<string name="summ_vibrate_intensity_legend">1-Más Débil 2-Por Defecto 4-Fuerte</string>
+	<string name="summ_connected_vibrate_intensity">Intensidad de vibración, cuando se conecta una llamada</string>
+	<string name="summ_hangup_vibrate_intensity">Intensidad de vibración, cuando se termina una llamada</string>
+	<string name="summ_call_waiting_vibrate_intensity">Intensidad de vibración, cuando una llamada está en espera</string>
+	<string name="summ_every_minute_vibrate_intensity">Intensidad de vibración, para cada minuto durante las llamadas salientes</string>
+	<string name="summ_fixed_time_vibrate_intensity">Intensidad de vibración a tiempo fijo, después de que se conecte una llamada saliente</string>
+	<string name="text_disabled">Inhabilitar</string>
+	<string name="text_invalid_value"> Valor no válido</string>
+ </resources>
