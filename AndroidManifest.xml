@@ -1,12 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gzplanet.xposed.xperiaphonevibrator"
-    android:versionCode="253"
-    android:versionName="2.53 (Build06281039)" >
+    android:versionCode="300"
+    android:versionName="3.00 (Build05312229)" >
 
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="22" />
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"

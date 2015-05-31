@@ -79,8 +79,8 @@
   <string name="summ_outgoing_state_change_threshold">Práh změny stavu spojeného odchozího hovoru</string>
   <!--Original value: Enable additional debug info to Xposed log file-->
   <string name="summ_debug">Povolit dodatečné ladící informace pro Xposed</string>
-  <!--Original value: 1-Weakest 2-Default 4-Strongest-->
-  <string name="summ_vibrate_intensity_legend">1-Slabé 2-Základní 4-Nejsilnější</string>
+  <!--Original value: 1-Weakest 2-Default 5-Strongest-->
+  <string name="summ_vibrate_intensity_legend">1-Slabé 2-Základní 5-Nejsilnější</string>
   <!--Original value: Vibration intensity when a call is connected-->
   <string name="summ_connected_vibrate_intensity">Intenzita vibrací při spojení hovoru</string>
   <!--Original value: Vibration intensity when a call is ended-->

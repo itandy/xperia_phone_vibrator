@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:robobunny="http://robobunny.com"
-    android:persistent="true" >
+    android:persistent="true"
+    android:key="pref_parent" >
 
     <PreferenceCategory android:title="@string/cat_outgoing_options" >
         <CheckBoxPreference
@@ -35,7 +36,9 @@
             android:key="pref_vibrate_fixed_time_second"
             android:title="@string/title_vibrate_fixed_time_second" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/cat_incoming_options" >
+    <PreferenceCategory
+        android:key="pref_cat_incoming" 
+        android:title="@string/cat_incoming_options" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_vibrate_incoming"

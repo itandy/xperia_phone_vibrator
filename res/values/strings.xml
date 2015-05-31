@@ -35,7 +35,7 @@
     <string name="summ_outgoing_state_change_threshold">Threshold for state change for connected outgoing call</string>
     <string name="summ_debug">Enable additional debug info to Xposed log file</string>
 
-    <string name="summ_vibrate_intensity_legend">1-Weakest 2-Default 4-Strongest</string>
+    <string name="summ_vibrate_intensity_legend">1-Weakest 2-Default 5-Strongest</string>
     <string name="summ_connected_vibrate_intensity">Vibration intensity when a call is connected</string>
     <string name="summ_hangup_vibrate_intensity">Vibration intensity when a call is ended</string>
     <string name="summ_call_waiting_vibrate_intensity">Vibration intensity when a call is waiting</string>

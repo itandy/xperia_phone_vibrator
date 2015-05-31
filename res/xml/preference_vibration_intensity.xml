@@ -2,14 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:robobunny="http://robobunny.com" >
 
-    <PreferenceCategory android:title="@string/title_vibrate_intensity" >
+    <PreferenceCategory 
+        android:key="pref_parent"
+        android:title="@string/title_vibrate_intensity" >
         <Preference 
             android:summary="@string/summ_vibrate_intensity_legend"/>
 
         <com.robobunny.SeekBarPreference
             android:defaultValue="2"
             android:key="pref_connected_vibrate_intensity"
-            android:max="4"
+            android:max="5"
             android:summary="@string/summ_connected_vibrate_intensity"
             android:title="@string/title_vibrate_connected"
             robobunny:min="1"
@@ -18,7 +20,7 @@
         <com.robobunny.SeekBarPreference
             android:defaultValue="2"
             android:key="pref_hangup_vibrate_intensity"
-            android:max="4"
+            android:max="5"
             android:summary="@string/summ_hangup_vibrate_intensity"
             android:title="@string/title_vibrate_hangup"
             robobunny:min="1"
@@ -27,7 +29,7 @@
         <com.robobunny.SeekBarPreference
             android:defaultValue="2"
             android:key="pref_call_waiting_vibrate_intensity"
-            android:max="4"
+            android:max="5"
             android:summary="@string/summ_call_waiting_vibrate_intensity"
             android:title="@string/title_vibrate_call_waiting"
             robobunny:min="1"
@@ -36,7 +38,7 @@
         <com.robobunny.SeekBarPreference
             android:defaultValue="2"
             android:key="pref_every_minute_vibrate_intensity"
-            android:max="4"
+            android:max="5"
             android:summary="@string/summ_every_minute_vibrate_intensity"
             android:title="@string/title_vibrate_every_minute"
             robobunny:min="1"
@@ -45,7 +47,7 @@
         <com.robobunny.SeekBarPreference
             android:defaultValue="2"
             android:key="pref_fixed_time_vibrate_intensity"
-            android:max="4"
+            android:max="5"
             android:summary="@string/summ_fixed_time_vibrate_intensity"
             android:title="@string/title_vibrate_fixed_time"
             robobunny:min="1"

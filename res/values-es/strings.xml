@@ -30,7 +30,7 @@
 	<string name="summ_vibrate_intensity">Ajuste la intensidad de vibración para cada tipo</string>
 	<string name="summ_outgoing_state_change_threshold">Umbral de cambio de estado para la llamada saliente conectado</string>
 	<string name="summ_debug">Habilitar la información de depuración adicional al archivo de registro de Xposed</string>
-	<string name="summ_vibrate_intensity_legend">1-Más Débil 2-Por Defecto 4-Fuerte</string>
+	<string name="summ_vibrate_intensity_legend">1-Más Débil 2-Por Defecto 5-Fuerte</string>
 	<string name="summ_connected_vibrate_intensity">Intensidad de vibración, cuando se conecta una llamada</string>
 	<string name="summ_hangup_vibrate_intensity">Intensidad de vibración, cuando se termina una llamada</string>
 	<string name="summ_call_waiting_vibrate_intensity">Intensidad de vibración, cuando una llamada está en espera</string>

@@ -35,7 +35,7 @@
     <string name="summ_outgoing_state_change_threshold">去电时更新状态可容许的最长时间</string>
     <string name="summ_debug">在Xposed日志写入更多除错信息</string>
 
-    <string name="summ_vibrate_intensity_legend">1-最弱 2-默认 4-最强</string>
+    <string name="summ_vibrate_intensity_legend">1-最弱 2-默认 5-最强</string>
     <string name="summ_connected_vibrate_intensity">去电或来电时之振动强度</string>
     <string name="summ_hangup_vibrate_intensity">通话结束时之振动强度</string>
     <string name="summ_call_waiting_vibrate_intensity">来电等待时之振动强度</string>
