@@ -126,10 +126,6 @@ public class XposedSettings extends Activity {
 				mPrefStateChangeThreshold = findPreference("pref_outgoing_state_change_threshold");
 				mPrefParent = (PreferenceScreen) findPreference("pref_parent");
 				mPrefParent.removePreference(mPrefStateChangeThreshold);
-
-				mPrefCallWaiting = findPreference("pref_vibrate_call_waiting");
-				mPrefCatIncoming = (PreferenceCategory) findPreference("pref_cat_incoming");
-				mPrefCatIncoming.removePreference(mPrefCallWaiting);
 			}
 		}
 	}
@@ -153,7 +149,6 @@ public class XposedSettings extends Activity {
 			getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
 			addPreferencesFromResource(R.xml.preference_vibration_intensity);
 
-			PreferenceCategory prefParent = (PreferenceCategory) findPreference("pref_parent");
 			Preference prefCallWaitingIntensity = findPreference("pref_call_waiting_vibrate_intensity");
 
 			findPreference("pref_connected_vibrate_intensity").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -180,21 +175,17 @@ public class XposedSettings extends Activity {
 
 			});
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				prefParent.removePreference(prefCallWaitingIntensity);
-			} else {
-				prefCallWaitingIntensity.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			prefCallWaitingIntensity.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-					@Override
-					public boolean onPreferenceChange(Preference preference, Object newValue) {
-						if (!onCreate3)
-							Utils.vibratePhone(getActivity(), Utils.patternCallWaiting, (Integer) newValue);
-						onCreate3 = false;
-						return true;
-					}
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					if (!onCreate3)
+						Utils.vibratePhone(getActivity(), Utils.patternCallWaiting, (Integer) newValue);
+					onCreate3 = false;
+					return true;
+				}
 
-				});
-			}
+			});
 
 			findPreference("pref_every_minute_vibrate_intensity").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 

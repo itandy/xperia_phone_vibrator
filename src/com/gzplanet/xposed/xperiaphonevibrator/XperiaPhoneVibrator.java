@@ -35,6 +35,18 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 	private static final int VIBRATE_EVERY_MIN = 200;
 	private static final int VIBRATE_FIXED_TIME = VIBRATE_EVERY_MIN + 1;
 
+	// android.telecom.CallState, for Lollipop
+	static final int NEW = 0;
+	static final int CONNECTING = 1;
+	static final int PRE_DIAL_WAIT = 2;
+	static final int DIALING = 3;
+	static final int RINGING = 4;
+	static final int ACTIVE = 5;
+	static final int ON_HOLD = 6;
+	static final int DISCONNECTED = 7;
+	static final int ABORTED = 8;
+	static final int DISCONNECTING = 9;
+
 	private static XSharedPreferences pref;
 
 	static Class<?> mPhoneStateBroadcaster = null;
@@ -47,18 +59,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 	static Runnable mPeriodicHandler;
 	static Context mContext;
 	static int mEverySecond;
-
-	// android.telecom.CallState, for Lollipop
-	static final int NEW = 0;
-	static final int CONNECTING = 1;
-	static final int PRE_DIAL_WAIT = 2;
-	static final int DIALING = 3;
-	static final int RINGING = 4;
-	static final int ACTIVE = 5;
-	static final int ON_HOLD = 6;
-	static final int DISCONNECTED = 7;
-	static final int ABORTED = 8;
-	static final int DISCONNECTING = 9;
+	static int mPrevState = NEW;
 
 	@Override
 	public void initZygote(StartupParam startupParam) throws Throwable {
@@ -80,94 +81,125 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 																	 */
 			if (lpparam.packageName.equals(PKGNAME_TELECOM)) {
 				boolean onCallStateChanged = false;
+				boolean onCallAdded = false;
+
 				try {
-					mPhoneStateBroadcaster = XposedHelpers.findClass(PKGNAME_TELECOM + ".PhoneStateBroadcaster",
-							lpparam.classLoader);
+					mPhoneStateBroadcaster = XposedHelpers.findClass(PKGNAME_TELECOM + ".PhoneStateBroadcaster", lpparam.classLoader);
 					mCall = XposedHelpers.findClass(PKGNAME_TELECOM + ".Call", lpparam.classLoader);
 					mCallState = XposedHelpers.findClass(CLASSNAME_CALLSTATE, lpparam.classLoader);
-					onCallStateChanged = XposedHelpers.findMethodExact(mPhoneStateBroadcaster, "onCallStateChanged",
-							mCall, int.class, int.class) == null ? false : true;
+					onCallStateChanged = XposedHelpers.findMethodExact(mPhoneStateBroadcaster, "onCallStateChanged", mCall, int.class, int.class) == null ? false
+							: true;
+				} catch (Exception e) {
+				}
+
+				try {
+					mPhoneStateBroadcaster = XposedHelpers.findClass(PKGNAME_TELECOM + ".PhoneStateBroadcaster", lpparam.classLoader);
+					mCall = XposedHelpers.findClass(PKGNAME_TELECOM + ".Call", lpparam.classLoader);
+					mCallState = XposedHelpers.findClass(CLASSNAME_CALLSTATE, lpparam.classLoader);
+					onCallAdded = XposedHelpers.findMethodExact(mPhoneStateBroadcaster, "onCallAdded", mCall) == null ? false : true;
 				} catch (Exception e) {
 				}
 
 				pref.reload();
 				if (pref.getBoolean("pref_debug", false))
-					XposedBridge.log(String.format("onCallStateChanged: %b", onCallStateChanged));
+					XposedBridge.log(String.format("onCallStateChanged:%b, onCallAdded:%b", onCallStateChanged, onCallAdded));
 
-				XposedHelpers.findAndHookMethod(mPhoneStateBroadcaster, "onCallStateChanged", mCall, int.class,
-						int.class, new XC_MethodHook() {
+				XposedHelpers.findAndHookMethod(mPhoneStateBroadcaster, "onCallStateChanged", mCall, int.class, int.class, new XC_MethodHook() {
 
-							@Override
-							protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-								try {
-									// get preferences
-									pref.reload();
-									int connectedIntensity = pref.getInt("pref_connected_vibrate_intensity", 2);
-									int hangupIntensity = pref.getInt("pref_hangup_vibrate_intensity", 2);
-									boolean debug = pref.getBoolean("pref_debug", false);
+					@Override
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						try {
+							// get preferences
+							pref.reload();
+							int connectedIntensity = pref.getInt("pref_connected_vibrate_intensity", 2);
+							int hangupIntensity = pref.getInt("pref_hangup_vibrate_intensity", 2);
+							boolean debug = pref.getBoolean("pref_debug", false);
 
-									Object call = param.args[0];
-									int oldState = (Integer) param.args[1];
-									int newState = (Integer) param.args[2];
-									if (mContext == null)
-										mContext = (Context) XposedHelpers.callMethod(call, "getContext");
+							Object call = param.args[0];
+							int oldState = (Integer) param.args[1];
+							int newState = (Integer) param.args[2];
+							if (mContext == null)
+								mContext = (Context) XposedHelpers.callMethod(call, "getContext");
 
-									if (debug)
-										XposedBridge.log(String.format(
-												"getPotentialStateFromCallList: oldState:%s newState:%s context:%b",
-												XposedHelpers.callStaticMethod(mCallState, "toString", oldState)
-														.toString(),
-												XposedHelpers.callStaticMethod(mCallState, "toString", newState)
-														.toString(), mContext == null));
+							if (debug)
+								XposedBridge.log(String.format("onCallStateChanged: oldState:%s newState:%s context:%b",
+										XposedHelpers.callStaticMethod(mCallState, "toString", oldState).toString(),
+										XposedHelpers.callStaticMethod(mCallState, "toString", newState).toString(), mContext == null));
 
-									if (oldState == DIALING && newState == ACTIVE) {
-										// connected outgoing call
-										if (pref.getBoolean("pref_vibrate_outgoing", true))
-											Utils.vibratePhone(mContext, Utils.patternConnected, connectedIntensity);
+							if (oldState == DIALING && newState == ACTIVE) {
+								// connected outgoing call
+								if (pref.getBoolean("pref_vibrate_outgoing", true))
+									Utils.vibratePhone(mContext, Utils.patternConnected, connectedIntensity);
 
-										// fixed time on connected outgoing call
-										if (pref.getBoolean("pref_vibrate_fixed_time", false)) {
-											final int time = Integer.valueOf(pref.getString(
-													"pref_vibrate_fixed_time_second", "0"));
-											startFixedTimeVibration(time * 1000);
-										}
+								// fixed time on connected outgoing call
+								if (pref.getBoolean("pref_vibrate_fixed_time", false)) {
+									final int time = Integer.valueOf(pref.getString("pref_vibrate_fixed_time_second", "0"));
+									startFixedTimeVibration(time * 1000);
+								}
 
-										// periodically on connected outgoing
-										// call
-										if (pref.getBoolean("pref_vibrate_every_minute", false)) {
-											mEverySecond = Integer.valueOf(pref.getString(
-													"pref_vibrate_every_minute_second", "45"));
-											startEveryMinuteVibration();
+								// periodically on connected outgoing
+								// call
+								if (pref.getBoolean("pref_vibrate_every_minute", false)) {
+									mEverySecond = Integer.valueOf(pref.getString("pref_vibrate_every_minute_second", "45"));
+									startEveryMinuteVibration();
 
-										}
-									} else if (oldState == RINGING && newState == ACTIVE) {
-										// connected incoming call
-										if (pref.getBoolean("pref_vibrate_incoming", true))
-											Utils.vibratePhone(mContext, Utils.patternConnected, connectedIntensity);
-									} else if (oldState == ACTIVE && newState == DISCONNECTED) {
-										// hang up
-										if (pref.getBoolean("pref_vibrate_hangup", true))
-											Utils.vibratePhone(mContext, Utils.patternHangup, hangupIntensity);
+								}
+							} else if (oldState == RINGING && newState == ACTIVE) {
+								// connected incoming call
+								if (pref.getBoolean("pref_vibrate_incoming", true))
+									Utils.vibratePhone(mContext, Utils.patternConnected, connectedIntensity);
+							} else if (newState == DISCONNECTED) {
+								// hang up
+								if (pref.getBoolean("pref_vibrate_hangup", true))
+									Utils.vibratePhone(mContext, Utils.patternHangup, hangupIntensity);
 
-										// release partial wake lock
-										if (mWakeLock != null)
-											if (mWakeLock.isHeld())
-												mWakeLock.release();
+								// release partial wake lock
+								if (mWakeLock != null)
+									if (mWakeLock.isHeld())
+										mWakeLock.release();
 
-										// remove any pending fixed time or
-										// periodic handlers
-										if (mHandler != null) {
-											if (mPeriodicHandler != null)
-												mHandler.removeCallbacks(mPeriodicHandler);
-											if (mFixedTimeHandler != null)
-												mHandler.removeCallbacks(mFixedTimeHandler);
-										}
-									}
-								} catch (Exception e) {
+								// remove any pending fixed time or
+								// periodic handlers
+								if (mHandler != null) {
+									if (mPeriodicHandler != null)
+										mHandler.removeCallbacks(mPeriodicHandler);
+									if (mFixedTimeHandler != null)
+										mHandler.removeCallbacks(mFixedTimeHandler);
 								}
 							}
-						});
+							mPrevState = newState;
+						} catch (Exception e) {
+						}
+					}
+				});
 
+				XposedHelpers.findAndHookMethod(mPhoneStateBroadcaster, "onCallAdded", mCall, new XC_MethodHook() {
+					@Override
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						try {
+							// get preferences
+							pref.reload();
+							int callWaitingIntensity = pref.getInt("pref_call_waiting_vibrate_intensity", 2);
+							boolean debug = pref.getBoolean("pref_debug", false);
+
+							if (pref.getBoolean("pref_vibrate_call_waiting", true)) {
+								Object call = param.args[0];
+								if (mContext == null)
+									mContext = (Context) XposedHelpers.callMethod(call, "getContext");
+
+								int state = (Integer) XposedHelpers.callMethod(call, "getState");
+								if (debug)
+									XposedBridge.log(String.format("onCallAdded: state:%s", XposedHelpers.callStaticMethod(mCallState, "toString", state)
+											.toString()));
+
+								if (mPrevState == ACTIVE && state == RINGING)
+									Utils.vibratePhone(mContext, Utils.patternCallWaiting, callWaitingIntensity);
+							}
+
+						} catch (Exception e) {
+						}
+					}
+				});
 			}
 		} else if (lpparam.packageName.equals(PKGNAME_PHONE)) { /*
 																 * pre Lollipop
@@ -179,41 +211,39 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 			boolean onDisconnectExists = false;
 			boolean onNewRingingConnectionExists = false;
 			try {
-				onPhoneStateChangedExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier",
-						lpparam.classLoader, "onPhoneStateChanged", AsyncResult.class) == null ? false : true;
+				onPhoneStateChangedExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "onPhoneStateChanged",
+						AsyncResult.class) == null ? false : true;
 			} catch (Exception e) {
 			}
 
 			try {
-				handleMessageExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier",
-						lpparam.classLoader, "handleMessage", Message.class) == null ? false : true;
+				handleMessageExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "handleMessage", Message.class) == null ? false
+						: true;
 			} catch (Exception e) {
 			}
 
 			try {
-				onDisconnectExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier",
-						lpparam.classLoader, "onDisconnect", AsyncResult.class) == null ? false : true;
+				onDisconnectExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "onDisconnect", AsyncResult.class) == null ? false
+						: true;
 			} catch (Exception e) {
 			}
 
 			try {
-				onNewRingingConnectionExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier",
-						lpparam.classLoader, "onNewRingingConnection", AsyncResult.class) == null ? false : true;
+				onNewRingingConnectionExists = XposedHelpers.findMethodExact(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "onNewRingingConnection",
+						AsyncResult.class) == null ? false : true;
 			} catch (Exception e) {
 			}
 
 			pref.reload();
 			if (pref.getBoolean("pref_debug", false))
-				XposedBridge
-						.log(String
-								.format("onPhoneStateChangedExists: %b\nhandleMessageExists: %b\nonDisconnectExists: %b\nonNewRingingConnectionExists: %b",
-										onPhoneStateChangedExists, handleMessageExists, onDisconnectExists,
-										onNewRingingConnectionExists));
+				XposedBridge.log(String.format(
+						"onPhoneStateChangedExists: %b\nhandleMessageExists: %b\nonDisconnectExists: %b\nonNewRingingConnectionExists: %b",
+						onPhoneStateChangedExists, handleMessageExists, onDisconnectExists, onNewRingingConnectionExists));
 
 			// hook onPhoneStateChanged for outgoing calls
 			if (onPhoneStateChangedExists)
-				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader,
-						"onPhoneStateChanged", AsyncResult.class, new XC_MethodHook() {
+				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "onPhoneStateChanged", AsyncResult.class,
+						new XC_MethodHook() {
 							@Override
 							protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 								Context context = (Context) getObjectField(param.thisObject, "mApplication");
@@ -221,8 +251,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 
 								// get preferences
 								int connectedIntensity = pref.getInt("pref_connected_vibrate_intensity", 2);
-								int stateChangeThreshold = pref.getInt("pref_outgoing_state_change_threshold",
-										OUTGOING_CALL_STATE_CHANGE_THRESHOLD);
+								int stateChangeThreshold = pref.getInt("pref_outgoing_state_change_threshold", OUTGOING_CALL_STATE_CHANGE_THRESHOLD);
 								boolean debug = pref.getBoolean("pref_debug", false);
 
 								CallManager mCM = (CallManager) getObjectField(param.thisObject, "mCM");
@@ -236,8 +265,8 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 										Call.State cstate = call.getState();
 
 										if (debug)
-											XposedBridge.log(String.format("cstate:%s isIncoming:%b durationMillis:%d",
-													cstate.toString(), c.isIncoming(), c.getDurationMillis()));
+											XposedBridge.log(String.format("cstate:%s isIncoming:%b durationMillis:%d", cstate.toString(), c.isIncoming(),
+													c.getDurationMillis()));
 
 										if (cstate == Call.State.ACTIVE) {
 											if (!c.isIncoming()) {
@@ -246,16 +275,13 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 													// outgoing
 													// call
 													if (pref.getBoolean("pref_vibrate_outgoing", true))
-														Utils.vibratePhone(context, Utils.patternConnected,
-																connectedIntensity);
+														Utils.vibratePhone(context, Utils.patternConnected, connectedIntensity);
 
 													// vibrate at fixed time on
 													// connected outgoing call
 													if (pref.getBoolean("pref_vibrate_fixed_time", false)) {
-														final int time = Integer.valueOf(pref.getString(
-																"pref_vibrate_fixed_time_second", "0"));
-														startFixedTimeVibration(param.thisObject,
-																time * 1000 - c.getDurationMillis());
+														final int time = Integer.valueOf(pref.getString("pref_vibrate_fixed_time_second", "0"));
+														startFixedTimeVibration(param.thisObject, time * 1000 - c.getDurationMillis());
 													}
 												}
 
@@ -263,10 +289,8 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 												// outgoing
 												// call
 												if (pref.getBoolean("pref_vibrate_every_minute", false)) {
-													final int second = Integer.valueOf(pref.getString(
-															"pref_vibrate_every_minute_second", "45"));
-													startEveryMinuteVibration(param.thisObject, second * 1000,
-															c.getDurationMillis() % 60000);
+													final int second = Integer.valueOf(pref.getString("pref_vibrate_every_minute_second", "45"));
+													startEveryMinuteVibration(param.thisObject, second * 1000, c.getDurationMillis() % 60000);
 												}
 
 											} else if (pref.getBoolean("pref_vibrate_incoming", true) && c.isIncoming())
@@ -282,68 +306,65 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 			// hook handleMessage to handle periodic/fixed time vibration new
 			// messages
 			if (handleMessageExists)
-				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "handleMessage",
-						Message.class, new XC_MethodHook() {
-							@Override
-							protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-								Context context = (Context) getObjectField(param.thisObject, "mApplication");
-								int what = ((Message) param.args[0]).what;
-								switch (what) {
-								case VIBRATE_EVERY_MIN:
-									pref.reload();
+				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "handleMessage", Message.class, new XC_MethodHook() {
+					@Override
+					protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+						Context context = (Context) getObjectField(param.thisObject, "mApplication");
+						int what = ((Message) param.args[0]).what;
+						switch (what) {
+						case VIBRATE_EVERY_MIN:
+							pref.reload();
 
-									// get intensity preferences
-									int everyMinuteIntensity = pref.getInt("pref_every_minute_vibrate_intensity", 2);
+							// get intensity preferences
+							int everyMinuteIntensity = pref.getInt("pref_every_minute_vibrate_intensity", 2);
 
-									Utils.vibratePhone(context, Utils.patternEveryMinute, everyMinuteIntensity);
-									XposedHelpers.callMethod(param.thisObject, "sendEmptyMessageDelayed",
-											VIBRATE_EVERY_MIN, 60000);
-									param.setResult(null);
-									break;
-								case VIBRATE_FIXED_TIME:
-									pref.reload();
+							Utils.vibratePhone(context, Utils.patternEveryMinute, everyMinuteIntensity);
+							XposedHelpers.callMethod(param.thisObject, "sendEmptyMessageDelayed", VIBRATE_EVERY_MIN, 60000);
+							param.setResult(null);
+							break;
+						case VIBRATE_FIXED_TIME:
+							pref.reload();
 
-									// get intensity preferences
-									int fixedTimeIntensity = pref.getInt("pref_fixed_time_vibrate_intensity", 2);
+							// get intensity preferences
+							int fixedTimeIntensity = pref.getInt("pref_fixed_time_vibrate_intensity", 2);
 
-									Utils.vibratePhone(context, Utils.patternFixedTime, fixedTimeIntensity);
-									XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_FIXED_TIME);
-									param.setResult(null);
-									break;
-								}
-							}
-						});
+							Utils.vibratePhone(context, Utils.patternFixedTime, fixedTimeIntensity);
+							XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_FIXED_TIME);
+							param.setResult(null);
+							break;
+						}
+					}
+				});
 
 			// hook onDisconnect for disconnected calls
 			if (onDisconnectExists)
-				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "onDisconnect",
-						AsyncResult.class, new XC_MethodHook() {
-							@Override
-							protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-								Context context = (Context) getObjectField(param.thisObject, "mApplication");
-								pref.reload();
+				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "onDisconnect", AsyncResult.class, new XC_MethodHook() {
+					@Override
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						Context context = (Context) getObjectField(param.thisObject, "mApplication");
+						pref.reload();
 
-								// get intensity preferences
-								int hangupIntensity = pref.getInt("pref_hangup_vibrate_intensity", 2);
+						// get intensity preferences
+						int hangupIntensity = pref.getInt("pref_hangup_vibrate_intensity", 2);
 
-								if (pref.getBoolean("pref_vibrate_hangup", true)) {
-									Connection c = (Connection) ((AsyncResult) param.args[0]).result;
-									if (c != null && c.getDurationMillis() > 0)
-										Utils.vibratePhone(context, Utils.patternHangup, hangupIntensity);
-								}
+						if (pref.getBoolean("pref_vibrate_hangup", true)) {
+							Connection c = (Connection) ((AsyncResult) param.args[0]).result;
+							if (c != null && c.getDurationMillis() > 0)
+								Utils.vibratePhone(context, Utils.patternHangup, hangupIntensity);
+						}
 
-								// Stop every minute vibration
-								XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_EVERY_MIN);
+						// Stop every minute vibration
+						XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_EVERY_MIN);
 
-								// Stop fixed time vibration
-								XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_FIXED_TIME);
-							}
-						});
+						// Stop fixed time vibration
+						XposedHelpers.callMethod(param.thisObject, "removeMessages", VIBRATE_FIXED_TIME);
+					}
+				});
 
 			// hook onNewRingingConnection for new call waiting
 			if (onNewRingingConnectionExists)
-				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader,
-						"onNewRingingConnection", AsyncResult.class, new XC_MethodHook() {
+				XposedHelpers.findAndHookMethod(PKGNAME_PHONE + ".CallNotifier", lpparam.classLoader, "onNewRingingConnection", AsyncResult.class,
+						new XC_MethodHook() {
 							@Override
 							protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 								Context context = (Context) getObjectField(param.thisObject, "mApplication");
