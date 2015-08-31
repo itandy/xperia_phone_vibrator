@@ -437,7 +437,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 						if (mWakeLock.isHeld()) {
 							mWakeLock.release();
 						}
-						mWakeLock.acquire(mEverySecond * 1000 + 1000);
+						mWakeLock.acquire(60 * 1000 + 1000);
 					}
 
 					pref.reload();
@@ -446,7 +446,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 					int periodicIntensity = pref.getInt("pref_every_minute_vibrate_intensity", 2);
 
 					Utils.vibratePhone(mContext, Utils.patternEveryMinute, periodicIntensity);
-					mHandler.postDelayed(mPeriodicHandler, mEverySecond * 1000);
+					mHandler.postDelayed(mPeriodicHandler, 60 * 1000);
 				}
 
 			};
