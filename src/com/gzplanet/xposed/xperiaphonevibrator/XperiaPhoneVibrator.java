@@ -13,6 +13,7 @@ import com.android.internal.telephony.Call;
 import com.android.internal.telephony.CallManager;
 import com.android.internal.telephony.Connection;
 import com.android.internal.telephony.Phone;
+import com.crossbowffs.remotepreferences.RemotePreferences;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -34,6 +35,8 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 	// potential conflict if 200 or above message ID is already used
 	private static final int VIBRATE_EVERY_MIN = 200;
 	private static final int VIBRATE_FIXED_TIME = VIBRATE_EVERY_MIN + 1;
+
+	static final int PHONE_TYPE_CDMA = 2;
 
 	// android.telecom.CallState, for Lollipop
 	static final int NEW = 0;
@@ -67,6 +70,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 		// just in case the preference file permission is reset by
 		// recovery/script
 		pref.makeWorldReadable();
+		Utils.dumpPrefs("initZygote", pref);
 	}
 
 	@Override
@@ -105,6 +109,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 				} catch (Exception e) {
 				}
 
+				Utils.dumpPrefs(PKGNAME_TELECOM, pref);
 				pref.reload();
 				if (pref.getBoolean("pref_debug", false))
 					XposedBridge.log(String.format("onCallStateChanged:%b, onCallAdded:%b", onCallStateChanged,
@@ -116,17 +121,18 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 							@Override
 							protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 								try {
-									// get preferences
-									pref.reload();
-									int connectedIntensity = pref.getInt("pref_connected_vibrate_intensity", 2);
-									int hangupIntensity = pref.getInt("pref_hangup_vibrate_intensity", 2);
-									boolean debug = pref.getBoolean("pref_debug", false);
-
 									Object call = param.args[0];
 									int oldState = (Integer) param.args[1];
 									int newState = (Integer) param.args[2];
 									if (mContext == null)
 										mContext = (Context) XposedHelpers.callMethod(call, "getContext");
+
+									// get preferences
+									RemotePreferences remotePrefs = new RemotePreferences(mContext, Utils.PREF_AUTHORITY, Utils.PREF_NAME);
+									Utils.dumpPrefs(PKGNAME_TELECOM + "onCallStateChanged", remotePrefs);
+									int connectedIntensity = remotePrefs.getInt("pref_connected_vibrate_intensity", 2);
+									int hangupIntensity = remotePrefs.getInt("pref_hangup_vibrate_intensity", 2);
+									boolean debug = remotePrefs.getBoolean("pref_debug", false);
 
 									if (debug)
 										XposedBridge.log(String.format(
@@ -136,31 +142,31 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 
 									if (oldState == DIALING && newState == ACTIVE) {
 										// connected outgoing call
-										if (pref.getBoolean("pref_vibrate_outgoing", true))
+										if (remotePrefs.getBoolean("pref_vibrate_outgoing", true))
 											Utils.vibratePhone(mContext, Utils.patternConnected, connectedIntensity);
 
 										// fixed time on connected outgoing call
-										if (pref.getBoolean("pref_vibrate_fixed_time", false)) {
-											final int time = Integer.valueOf(pref.getString(
+										if (remotePrefs.getBoolean("pref_vibrate_fixed_time", false)) {
+											final int time = Integer.valueOf(remotePrefs.getString(
 													"pref_vibrate_fixed_time_second", "0"));
 											startFixedTimeVibration(time * 1000);
 										}
 
 										// periodically on connected outgoing
 										// call
-										if (pref.getBoolean("pref_vibrate_every_minute", false)) {
-											mEverySecond = Integer.valueOf(pref.getString(
+										if (remotePrefs.getBoolean("pref_vibrate_every_minute", false)) {
+											mEverySecond = Integer.valueOf(remotePrefs.getString(
 													"pref_vibrate_every_minute_second", "45"));
 											startEveryMinuteVibration();
 
 										}
 									} else if (oldState == RINGING && newState == ACTIVE) {
 										// connected incoming call
-										if (pref.getBoolean("pref_vibrate_incoming", true))
+										if (remotePrefs.getBoolean("pref_vibrate_incoming", true))
 											Utils.vibratePhone(mContext, Utils.patternConnected, connectedIntensity);
 									} else if (newState == DISCONNECTED) {
 										// hang up
-										if (pref.getBoolean("pref_vibrate_hangup", true))
+										if (remotePrefs.getBoolean("pref_vibrate_hangup", true))
 											Utils.vibratePhone(mContext, Utils.patternHangup, hangupIntensity);
 
 										// release partial wake lock
@@ -187,15 +193,17 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 					@Override
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 						try {
-							// get preferences
-							pref.reload();
-							int callWaitingIntensity = pref.getInt("pref_call_waiting_vibrate_intensity", 2);
-							boolean debug = pref.getBoolean("pref_debug", false);
+							Object call = param.args[0];
+							if (mContext == null)
+								mContext = (Context) XposedHelpers.callMethod(call, "getContext");
 
-							if (pref.getBoolean("pref_vibrate_call_waiting", true)) {
-								Object call = param.args[0];
-								if (mContext == null)
-									mContext = (Context) XposedHelpers.callMethod(call, "getContext");
+							// get preferences
+							RemotePreferences remotePrefs = new RemotePreferences(mContext, Utils.PREF_AUTHORITY, Utils.PREF_NAME);
+							Utils.dumpPrefs(PKGNAME_TELECOM + "onCallAdded", remotePrefs);
+							int callWaitingIntensity = remotePrefs.getInt("pref_call_waiting_vibrate_intensity", 2);
+							boolean debug = remotePrefs.getBoolean("pref_debug", false);
+
+							if (remotePrefs.getBoolean("pref_vibrate_call_waiting", true)) {
 
 								int state = (Integer) XposedHelpers.callMethod(call, "getState");
 								if (debug)
@@ -428,7 +436,7 @@ public class XperiaPhoneVibrator implements IXposedHookZygoteInit, IXposedHookLo
 		if (call == null) {
 			return null;
 		}
-		if (phone.getPhoneType() == Phone.PHONE_TYPE_CDMA) {
+		if (phone.getPhoneType() == PHONE_TYPE_CDMA) {
 			return call.getLatestConnection();
 		}
 		return call.getEarliestConnection();

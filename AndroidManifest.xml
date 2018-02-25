@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
     package="com.gzplanet.xposed.xperiaphonevibrator"
-    android:versionCode="313"
-    android:versionName="3.13 (Build12231735)" >
+    android:versionCode="320"
+    android:versionName="3.20 (Build02251814)" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -23,6 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="com.gzplanet.app.xperiaphonevibrator_preferences"
+            android:name=".PreferenceProvider"
+            android:exported="true"/>
 
         <meta-data
             android:name="xposedmodule"
